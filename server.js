@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAIApi } = require('openai');
 const path = require('path');
 
 dotenv.config();
@@ -11,10 +11,10 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
-const configuration = new Configuration({
+// Fix for OpenAI client
+const openai = new OpenAIApi({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 app.post('/api/advice', async (req, res) => {
   const { plantName, plantIssue } = req.body;
