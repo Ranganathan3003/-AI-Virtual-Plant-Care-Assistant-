@@ -18,20 +18,21 @@ app.post('/api/advice', async (req, res) => {
 
   try {
     const response = await axios.post(
-      'https://api-inference.huggingface.co/models/gpt2', // You can change to another model
-      { inputs: prompt },
+      'https://api-inference.huggingface.co/models/google/flan-t5-large', // or another HF model
+      {
+        inputs: prompt
+      },
       {
         headers: {
-          Authorization: `Bearer ${process.env.HF_API_KEY}`,
-        },
+          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`
+        }
       }
     );
 
-    const advice = response.data?.[0]?.generated_text || 'No advice received.';
+    const advice = response.data[0]?.generated_text || 'Sorry, no advice could be generated.';
     res.json({ advice });
-
   } catch (err) {
-    console.error('Error fetching from Hugging Face:', err.message);
+    console.error(err.response?.data || err.message);
     res.status(500).json({ advice: 'Failed to get response from AI.' });
   }
 });
